@@ -1,4 +1,3 @@
-import { Effect, Config, Layer, Console } from "effect"
 import * as Dotenv from 'dotenv'
 import { Client, Events, GatewayIntentBits } from 'discord.js'
 import { TelegramClient } from "telegramsjs";
@@ -26,6 +25,10 @@ telegramClient.on('ready', ({ user }) => {
     console.log('Bot ready')
 });
 
+telegramClient.on('message', (message) => {
+    console.log(message)
+})
+
 discordClient.on('voiceStateUpdate', async (oldState, newState) => {
     if (oldState.channel === null && newState.channel !== null) {
         if (FELPS_DISCORD_ID === newState?.member?.user.username) {
@@ -52,10 +55,11 @@ async function send(id: string) {
     )
 }
 
-const main = Effect.gen(function* () {
+
+
+function main() {
     telegramClient.login();
     discordClient.login(DISCORD_TOKEN);
-})
+}
 
-
-Effect.runFork(main)
+main()
