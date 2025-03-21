@@ -40,9 +40,6 @@ discordClient.on('voiceStateUpdate', async (oldState, newState) => {
     if (oldState.channel === null && newState.channel !== null) {
         if (newState.channel.parentId !== ID_GROUP_SALA_DEV) return
 
-        if (FELPS_DISCORD_ID === oldState?.member?.user.username) return
-        if (RPD_DISCORD_ID === oldState?.member?.user.username) return
-
         const invite = await createInvite(newState.guild.id, newState.channel.id)
 
         if (FELPS_DISCORD_ID === newState?.member?.user.username) {
