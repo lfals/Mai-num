@@ -32,21 +32,19 @@ discordClient.on(Events.ClientReady, readyClient => {
 });
 
 telegramClient.on('ready', ({ user }) => {
-    console.log('Bot ready')
+    console.log(`Bot ready as ${user?.username}`);
 });
-
-// telegramClient.on('message', async (message) => {
-//     console.log(message)
-//     send(FELPS_TELEGRAM_CHAT_ID, "")
-
-// })
 
 discordClient.on('voiceStateUpdate', async (oldState, newState) => {
 
     if (oldState.channel === null && newState.channel !== null) {
         if (newState.channel.parentId !== ID_GROUP_SALA_DEV) return
 
+        if (FELPS_DISCORD_ID === oldState?.member?.user.username) return
+        if (RPD_DISCORD_ID === oldState?.member?.user.username) return
+
         const invite = await createInvite(newState.guild.id, newState.channel.id)
+
         if (FELPS_DISCORD_ID === newState?.member?.user.username) {
             send(RPD_TELEGRAM_CHAT_ID, invite)
         }
@@ -58,24 +56,25 @@ discordClient.on('voiceStateUpdate', async (oldState, newState) => {
 });
 
 async function createInvite(guildId: string, channelId: string) {
-    const guild = discordClient.guilds.cache.get(guildId); // Replace with your guild ID
+
+    const guild = discordClient.guilds.cache.get(guildId);
+
     if (!guild) {
         console.error('Guild not found.');
         return;
     }
 
-    const channel = guild.channels.cache.get(channelId); // Replace with your channel ID
+    const channel = guild.channels.cache.get(channelId);
+
     if (!channel) {
         console.error('Channel not found.');
         return;
     }
 
     try {
-        const invite = await channel.guild.invites.create(channelId)
-        return invite.url;
+        return (await channel.guild.invites.create(channelId)).url
     } catch (error) {
         console.error('Error creating invite:', error);
-        return ""
     }
 
 }
@@ -83,9 +82,14 @@ async function createInvite(guildId: string, channelId: string) {
 async function send(id: string, invite?: string) {
 
     try {
+
         await telegramClient.sendMessage({
             chatId: id,
             text: `Mai num? \n ${invite}`,
+            linkPreviewOptions: {
+                is_disabled: true
+            },
+
         })
         await telegramClient.sendSticker({
             chatId: id,
