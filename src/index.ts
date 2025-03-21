@@ -35,11 +35,11 @@ telegramClient.on('ready', ({ user }) => {
     console.log('Bot ready')
 });
 
-telegramClient.on('message', async (message) => {
-    console.log(message)
-    send(FELPS_TELEGRAM_CHAT_ID, "")
+// telegramClient.on('message', async (message) => {
+//     console.log(message)
+//     send(FELPS_TELEGRAM_CHAT_ID, "")
 
-})
+// })
 
 discordClient.on('voiceStateUpdate', async (oldState, newState) => {
 
@@ -85,18 +85,13 @@ async function send(id: string, invite?: string) {
     try {
         await telegramClient.sendMessage({
             chatId: id,
-            text: "Mai num?",
+            text: `Mai num? \n ${invite}`,
         })
         await telegramClient.sendSticker({
             chatId: id,
             sticker: stickers[Math.floor(Math.random() * stickers.length)]
         })
-        if (invite) {
-            await telegramClient.sendMessage({
-                chatId: id,
-                text: invite,
-            })
-        }
+
     } catch (error) {
         console.log(error)
     }
