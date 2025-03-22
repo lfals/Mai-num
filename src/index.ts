@@ -43,17 +43,21 @@ discordClient.on('voiceStateUpdate', async (oldState, newState) => {
         const invite = await createInvite(newState.guild.id, newState.channel.id)
 
         if (FELPS_DISCORD_ID === newState?.member?.user.username) {
+            console.log(`Sending message to ${RPD_DISCORD_ID}`)
+
             send(RPD_TELEGRAM_CHAT_ID, invite)
         }
 
         if (RPD_DISCORD_ID === newState?.member?.user.username) {
+            console.log(`Sending message to ${FELPS_DISCORD_ID}`)
+
             send(FELPS_TELEGRAM_CHAT_ID, invite)
         }
     }
 });
 
 async function createInvite(guildId: string, channelId: string) {
-
+    console.log('Creating invite...')
     const guild = discordClient.guilds.cache.get(guildId);
 
     if (!guild) {
@@ -77,7 +81,7 @@ async function createInvite(guildId: string, channelId: string) {
 }
 
 async function send(id: string, invite?: string) {
-
+    console.log('Sending message...')
     try {
 
         await telegramClient.sendMessage({
@@ -102,6 +106,7 @@ async function send(id: string, invite?: string) {
 
 
 function main() {
+    console.log('Starting bot...')
     telegramClient.login();
     discordClient.login(DISCORD_TOKEN);
 }
